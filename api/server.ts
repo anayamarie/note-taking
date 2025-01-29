@@ -1,35 +1,51 @@
 import express from "express";
 import { MongoClient } from "mongodb";
-import noteRoutes from "../src/routes/noteRoutes";
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import * as dotenv from "dotenv"; // Updated import
 
+// Load environment variables from .env
+dotenv.config();
+
+// Initialize express app
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// MongoDB connection string (replace with your MongoDB Atlas URL in the .env file)
-const url =
-    process.env.MONGODB_URI ||
-    "mongodb+srv://anayatingson:E5KBeIa69YJUwVDu@dev-note-db-cluster.nvno3.mongodb.net/?retryWrites=true&w=majority&appName=dev-note-db-cluster";
-const dbName = process.env.MONGODB_DB || "notetaking";
+// MongoDB connection URI from environment variable
+const MONGODB_URI = process.env.MONGODB_URI || "";
 
-// Middleware
-app.use(express.json());
+let client: MongoClient;
+let db: any;
 
-async function createServer() {
-    const client = new MongoClient(url);
-    await client.connect();
-    const db = client.db(dbName);
-
-    // Inject database into routes
-    app.use("/notes", noteRoutes(db));
-
-    return app;
+async function connectDB() {
+    try {
+        if (!client) {
+            client = new MongoClient(MONGODB_URI);
+            // Connect to MongoDB Atlas
+            await client.connect();
+            db = client.db();
+            console.log("✅ Connected to MongoDB Atlas");
+        }
+    } catch (error) {
+        console.error("❌ MongoDB connection error:", error);
+        throw new Error("Could not connect to MongoDB Atlas");
+    }
 }
 
-// Vercel entry point
-let server: express.Express;
-export default async (req: VercelRequest, res: VercelResponse) => {
-    if (!server) {
-        server = await createServer();
+app.get("/", async (req, res) => {
+    try {
+        await connectDB();
+        const collection = db.collection("notes");
+        const result = await collection.find({}).toArray();
+        res.json({
+            message: "Hello from Express + MongoDB Atlas!",
+            data: result,
+        });
+    } catch (error) {
+        console.error("❌ MongoDB connection error:", error);
+        res.status(500).json({ message: "Error connecting to MongoDB Atlas" });
     }
-    server(req, res);
-};
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+});

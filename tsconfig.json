@@ -1,17 +1,12 @@
 {
     "compilerOptions": {
-        /* Language and Environment */
-        "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-        /* Modules */
-        "module": "commonjs" /* Specify what module code is generated. *
-        /* Interop Constraints */,
-        "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
-        /* Type Checking */
-        "strict": true /* Enable all strict type-checking options. */,
-        /* Completeness */
-        "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+        "target": "ES2016",
+        "module": "CommonJS",
         "outDir": "./dist",
-        "rootDir": "./"
+        "rootDir": "./",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true
     },
     "include": ["./**/*.ts"],
     "exclude": ["node_modules", "dist"]

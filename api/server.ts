@@ -1,7 +1,6 @@
 import express from "express";
-import dotenv from "dotenv";
-import noteRoutes from "../src/routes/noteRoutes";
-import { connectDB } from "../src/database";
+import { MongoClient } from "mongodb";
+import * as dotenv from "dotenv"; // Updated import
 
 // Load environment variables from .env
 dotenv.config();
@@ -10,42 +9,41 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+// MongoDB connection URI from environment variable
+const MONGODB_URI = process.env.MONGODB_URI || "";
 
-// Route for root path to get all notes
+let client: MongoClient;
+let db: any;
+
+async function connectDB() {
+    try {
+        if (!client) {
+            client = new MongoClient(MONGODB_URI);
+            // Connect to MongoDB Atlas
+            await client.connect();
+            db = client.db();
+            console.log("✅ Connected to MongoDB Atlas");
+        }
+    } catch (error) {
+        console.error("❌ MongoDB connection error:", error);
+        throw new Error("Could not connect to MongoDB Atlas");
+    }
+}
+
 app.get("/", async (req, res) => {
     try {
-        const client = await connectDB();
-        if (!client) {
-            return res
-                .status(500)
-                .json({ message: "Failed to connect to database" });
-        }
-
-        const db = client.db(); // Get the database object
-        if (!db) {
-            // If db is undefined or null, return an error response
-            return res.status(500).json({ message: "Database not found" });
-        }
-        const notesCollection = db.collection("notes");
-        const notes = await notesCollection.find().toArray();
+        await connectDB();
+        const collection = db.collection("notes");
+        const result = await collection.find({}).toArray();
         res.json({
             message: "Hello from Express + MongoDB Atlas!",
-            data: notes,
+            data: result,
         });
     } catch (error) {
-        console.error("Error retrieving notes:", error);
-        res.status(500).json({ message: "Error retrieving notes", error });
+        console.error("❌ MongoDB connection error:", error);
+        res.status(500).json({ message: "Error connecting to MongoDB Atlas" });
     }
 });
-
-// Ensure MongoDB connection
-connectDB().catch((err) => {
-    console.error("Failed to connect to MongoDB Atlas:", err);
-    process.exit(1); // Exit the app if DB connection fails
-});
-
-app.use("/api", noteRoutes);
 
 // Start the server
 app.listen(PORT, () => {

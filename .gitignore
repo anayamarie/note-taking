@@ -41,3 +41,6 @@ yarn-error.log*
 
 # vscode
 .vscode
+
+# Ignore the dist folder (compiled JavaScript files)
+dist/

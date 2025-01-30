@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import noteRoutes from "../src/routes/noteRoutes";
 import { connectDB } from "../src/database";
 
@@ -9,6 +10,15 @@ dotenv.config();
 // Initialize express app
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+// Use CORS middleware to allow cross-origin requests from specific origin
+app.use(
+    cors({
+        origin: "https://note-taking-api.vercel.app/api", // React app running here
+        methods: "GET,POST,PUT,DELETE", // Allowed methods
+        allowedHeaders: "Content-Type, Authorization", // Allowed headers
+    }),
+);
 
 app.use(express.json());
 

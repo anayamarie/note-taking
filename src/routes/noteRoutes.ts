@@ -9,7 +9,6 @@ router.get("/notes", async (req, res) => {
         const db = getDatabase();
         const notesCollection = db.collection("notes");
         const notes = await notesCollection.find().toArray();
-        console.log(notes);
         res.json(notes);
     } catch (err) {
         res.status(500).send("Error fetching notes");

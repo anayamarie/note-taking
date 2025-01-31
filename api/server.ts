@@ -14,7 +14,11 @@ const PORT = process.env.PORT || 8080;
 // Use CORS middleware to allow cross-origin requests from specific origin
 app.use(
     cors({
-        origin: ["http://localhost:3000", "https://note-taking-api.vercel.app"], // React app running here
+        origin: [
+            "http://localhost:3000",
+            "https://note-taking-api.vercel.app",
+            "https://note-taking-web-ph.vercel.app",
+        ], // React app running here
         methods: "GET,POST,PUT,DELETE", // Allowed methods
         allowedHeaders: "Content-Type, Authorization", // Allowed headers
     }),

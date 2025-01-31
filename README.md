@@ -29,3 +29,8 @@ Open [http://localhost:8080](http://localhost:8080) with your browser to see the
 -   NodeJS with ExpressJS
 -   MongoDB Atlas
 -   Vercel
+
+## Notes
+-  This is a separate repository for the Frontend https://github.com/anayamarie/note-taking-app to consume
+-  MongoDB Atlas for easier cloud database service
+-  Deployed using Vercel for the exposure of the api

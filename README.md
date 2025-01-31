@@ -1,3 +1,6 @@
+## Vercel Domain
+https://note-taking-api.vercel.app/api/notes
+
 ## Getting Started
 
 Run the development server:
